@@ -11,7 +11,10 @@ const handleDuplicateFieldsDB = err => {
     const message = `Duplicate field value: ${value}. Please use another value!`;
     return new AppError(message, 400);
   };
+  const handleValidationErrorDB = err => {
   
+  };
+
 module.exports=(err,req,res,next)=>{
   
     err.statusCode=err.statusCode||500
