@@ -51,7 +51,7 @@ exports.login=async (req,res,next)=>{
 exports.protect = async(req,res,next)=>{
     //1) Getting token and check of its there
     let token
-    if (req.headers.authorization&& req.headers.authorization.startwith('Bearer'))
+    if (req.headers.authorization&& req.headers.authorization.startsWith('Bearer'))
     {
         token =req.headers.authorization.split(' ')[1] 
     }
@@ -60,7 +60,7 @@ exports.protect = async(req,res,next)=>{
         return next(new AppError("You are not logged in",401))
     }
     //2) Verification token
-    const decoded=await promisify(jwt.verify)(token.process.env.JWT_SECRET)
+    const decoded=await promisify(jwt.verify)(token,process.env.JWT_SECRET)
    console.log(decoded)
     //3) Check if user still exists
   
