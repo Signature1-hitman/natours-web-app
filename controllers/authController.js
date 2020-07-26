@@ -77,4 +77,5 @@ if(freshUser.changedPasswordAfter(decoded.iat)){
 //clear being
 req.user=freshUser
     next();
+    console.log("This is changed")
 }
