@@ -62,11 +62,19 @@ exports.protect = async(req,res,next)=>{
     //2) Verification token
     const decoded=await promisify(jwt.verify)(token,process.env.JWT_SECRET)
    console.log(decoded)
-    //3) Check if user still exists
-  
-    //4) check if user changed password after the token was issued
+   const freshUser= await User.findById(decoded.id)
 
+    //3) Check if user still exists
+    if(!freshUser)
+    {
+        return next (new AppError('The user beelonging to this token does not exist.',401))
+    }
+    //4) check if user changed password after the token was issued
+if(freshUser.changedPasswordAfter(decoded.iat)){
+    return next(new AppError('User recently changed password:please log in again',401))
+}
 
 //clear being
+req.user=freshUser
     next();
 }
