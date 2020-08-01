@@ -75,7 +75,7 @@ if(freshUser.changedPasswordAfter(decoded.iat)){
 }
 
 //clear being
-token3=await promisify(jwt.verify)(token,process.env.JWT_SECRET)
+token=await promisify(jwt.verify)(token,process.env.JWT_SECRET)
 req.user=freshUser
     next();
     console.log("This is changed")
