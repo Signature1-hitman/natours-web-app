@@ -13,7 +13,8 @@ exports.signup=async(req,res,next)=>
         name:req.body.name,
         email:req.body.email,
         password:req.body.password,
-        passwordConfirm:req.body.passwordConfirm
+        passwordConfirm:req.body.passwordConfirm,
+        role:req.body.role
     })
 const token= signToken(newUser._id)
 
@@ -79,4 +80,25 @@ token=await promisify(jwt.verify)(token,process.env.JWT_SECRET)
 req.user=freshUser
     next();
     console.log("This is changed")
+}
+exports.restricTo=(...roles)=>{
+
+    return(req,res,next)=>{
+if(!roles.includes(req.user.role))
+{
+    return next( new AppError('You do not have permission to perform this action',403))
+}
+
+next();
+
+    }
+}
+exports.forgotPassword=async (req,res,next)=>{
+
+    const user = await User.findOne({email:req.body.email})
+    if(!user)
+    {
+        return next (new AppError('There is no user with email address',404))
+    }
+
 }
