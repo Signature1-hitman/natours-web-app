@@ -47,7 +47,9 @@ type:String
         }
        
     },
-    passwordChangedAt:Date
+    passwordChangedAt:Date,
+    passwordResetToken:String,
+    passwordResetExpires:Date
 
 })
 userSchema.pre('save',async function(next){
@@ -76,7 +78,10 @@ userSchema.methods.changedPasswordAfter= function(JWTimestamp){
 }
 userSchema.methods.createPasswordResetToken= function(){
 const resetToken= crypto.randomBytes(32).toString('hex')
-crypto.createHash('sha256').update(resetToken).digest('hex')
+this.passwordReset=Tokencrypto.createHash('sha256').update(resetToken).digest('hex')
+
+this.passwordResetExpires=Date.now()+10*68*1000;
+return resetToken
 }
 
 const User= mongoose.model('User',userSchema)
