@@ -128,3 +128,10 @@ catch(err){
 }
 
 }
+exports.resetPassword=(req,res,next)=>{
+
+    //1) Get user based on the token
+    //2) if token has not expired and there is user,set the new password
+    //3) Update changedPassword property for the user
+    //4) log the user in ,send jwt 
+}
