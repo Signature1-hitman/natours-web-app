@@ -135,6 +135,17 @@ exports.resetPassword= async (req,res,next)=>{
     const user = await User.findOne({passwordResetToken:hashedRoken,
         passwordResetExpires:{$gt:Date.now()}})
     //2) if token has not expired and there is user,set the new password
+    
+if(!user)
+{
+    return next(new AppError('Token is invalid or has expired',400))
+}
+user.password = req.body.password
+user.passwordConfirm=req.body.passwordConfirm
+user.passwordResetToken=undefined
+user.passwordResetExpires=undefined;
+await user.save()
+
     //3) Update changedPassword property for the user
     //4) log the user in ,send jwt 
 }
