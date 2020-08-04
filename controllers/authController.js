@@ -128,9 +128,12 @@ catch(err){
 }
 
 }
-exports.resetPassword=(req,res,next)=>{
+exports.resetPassword= async (req,res,next)=>{
 
     //1) Get user based on the token
+    const hashedToken = crypto.createHash('sha256').update(req.params.token).digest('hex')
+    const user = await User.findOne({passwordResetToken:hashedRoken,
+        passwordResetExpires:{$gt:Date.now()}})
     //2) if token has not expired and there is user,set the new password
     //3) Update changedPassword property for the user
     //4) log the user in ,send jwt 
