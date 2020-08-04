@@ -2,6 +2,8 @@ const User=require('./../models/userModel')
 const jwt=require('jsonwebtoken') 
 const AppError=require('./../utils/appError')
 const {promisify}=require('util')
+const sendEmail = require('../utils/email')
+const crypto = require('crypto')
 const signToken=id=>{
     return  jwt.sign({id:id},process.env.JWT_SECRET,{
         expiresIn:process.env.JWT_EXPIRES_IN})
@@ -89,8 +91,7 @@ if(!roles.includes(req.user.role))
     return next( new AppError('You do not have permission to perform this action',403))
 }
  
-const resetToken = user.createPasswordResetToken()
-await user.save({validateBeforSave:false})
+
 next();
 
     }
@@ -102,5 +103,28 @@ exports.forgotPassword=async (req,res,next)=>{
     {
         return next (new AppError('There is no user with email address',404))
     }
+    const resetToken = user.createPasswordResetToken();
+await user.save({validateBeforSave:false})
+const resetURL = `${req.protocol}://${req.get('host')}/api/v1/users/resetPassword/${resetToken}`
+const message = 'Forgot your password? Submit a Patch request with your password and password confirm' +`${resetURL}.\nIf you didn't`
+try{
+    await sendEmail({
+        email:user.email,
+        subject:'Your password reset token for 10 min',
+        message
+    })
+    res.status(200).json({
+        status:'success',
+        message:'Token sent to mail'
+    })
+}
+catch(err){
+    user.passwordResetToken=undefined;
+    user.passwordResetExpires=undefined;
+    await user.save({validateBeforeSave:false})
+    return next(
+        new AppError('there was an error sending email please try again later',500)
+    )
+}
 
 }
