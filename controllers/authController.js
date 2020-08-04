@@ -147,5 +147,10 @@ user.passwordResetExpires=undefined;
 await user.save()
 
     //3) Update changedPassword property for the user
+    const token=signToken(user._id)
+    res.status(200).json({
+        status:'success',
+        token
+    })
     //4) log the user in ,send jwt 
 }
