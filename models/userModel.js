@@ -86,6 +86,10 @@ this.passwordResetToken = crypto
 this.passwordResetExpires=Date.now()+10*68*1000;
 return resetToken
 }
+userSchema.pre('save',function(next){
+    if(!this.isModified('password')|| this.isNew)
+    return next()
+})
 
 const User= mongoose.model('User',userSchema)
 module.exports=User
