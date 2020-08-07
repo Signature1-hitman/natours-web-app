@@ -154,3 +154,15 @@ await user.save()
     })
     //4) log the user in ,send jwt 
 }
+exports.updatePassword= async (req,res,next)=>{
+
+    const user = await User.findByID(req.user.id).select('+password')
+if(!(await User.correctPassword(req.body.passwordConfirm,user.password)))
+{
+    return next(new AppError('Your current password is wrong',401))
+
+}
+user.password = req.body.password
+user.passwordConfirm= req.body.passwordConfirm
+await user.save()
+}
