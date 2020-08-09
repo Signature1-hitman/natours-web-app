@@ -12,6 +12,7 @@ const rateLimit = require('express-rate-limit');
 const app = express();
 
 // 1) MIDDLEWARES
+app.use(helmet())
 if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
 }
@@ -22,7 +23,7 @@ const limiter = ratelimit({
   message:'Too many requests from yhis IP,please try again in an hour'
 })
 app.use('/api',limiter)
-app.use(helmet())
+
 app.use(express.json());
 app.use(express.static(`${__dirname}/public`));
 
