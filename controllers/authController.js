@@ -8,6 +8,17 @@ const signToken=id=>{
     return  jwt.sign({id:id},process.env.JWT_SECRET,{
         expiresIn:process.env.JWT_EXPIRES_IN})
 }
+ const createSendToken =(user,statusCode,res)=>{
+     const token = signToken(user._id)
+     
+    res.status(statusCode).json({
+        status:'success',
+        token,
+        data:{
+            user
+        }
+    })
+ }
 
 exports.signup=async(req,res,next)=>
 {
@@ -18,15 +29,8 @@ exports.signup=async(req,res,next)=>
         passwordConfirm:req.body.passwordConfirm,
         role:req.body.role
     })
-const token= signToken(newUser._id)
+    createSendToken(newUser,201,res)
 
-    res.status(201).json({
-        status:'success',
-        token,
-        data:{
-            user:newUser
-        }
-    })
 } 
 exports.login=async (req,res,next)=>{
 
@@ -45,11 +49,7 @@ exports.login=async (req,res,next)=>{
         return next(new  AppError('Incorrect email or password'),401)
     }
 
-    const token=signToken(user._id)
-    res.status(200).json({
-        status:'success',
-        token
-    })
+    createSendToken(user,200,res)
 } 
 exports.protect = async(req,res,next)=>{
     //1) Getting token and check of its there
@@ -128,6 +128,7 @@ catch(err){
 }
 
 }
+
 exports.resetPassword= async (req,res,next)=>{
 
     //1) Get user based on the token
@@ -147,11 +148,8 @@ user.passwordResetExpires=undefined;
 await user.save()
 
     //3) Update changedPassword property for the user
-    const token=signToken(user._id)
-    res.status(200).json({
-        status:'success',
-        token
-    })
+    
+    createSendToken(user,200,res)
     //4) log the user in ,send jwt 
 }
 exports.updatePassword= async (req,res,next)=>{
