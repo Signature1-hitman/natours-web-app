@@ -155,7 +155,7 @@ await user.save()
 exports.updatePassword= async (req,res,next)=>{
 
     const user = await User.findByID(req.user.id).select('+password')
-if(!(await User.correctPassword(req.body.passwordConfirm,user.password)))
+if(!(await User.correctPassword(req.body.passwordCurrent,user.password)))
 {
     return next(new AppError('Your current password is wrong',401))
 
