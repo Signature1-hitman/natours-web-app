@@ -16,3 +16,11 @@ app.listen(port, () => {
   console.log(`App running on port ${port}...`);
 });
 //Test
+
+process.on('unhandledRejection', err => {
+  console.log('UNHANDLED REJECTION! 💥 Shutting down...');
+  console.log(err.name, err.message);
+  server.close(() => {
+    process.exit(1);
+  });
+});
