@@ -3,6 +3,8 @@ const morgan = require('morgan');
 const AppError=require('./utils/appError')
 const ratelimit = require('express-rate-limit')
 const helmet = require('helmet')
+const mongosanitize=require('express-mongo-sanitize')
+const xss = require('xss-clean')
 
 const tourRouter = require('./routes/tourRoutes');
 const userRouter = require('./routes/userRoutes');
@@ -24,7 +26,10 @@ const limiter = ratelimit({
 })
 app.use('/api',limiter)
 
-app.use(express.json());
+app.use(express.json({limit:'10kb'}));
+app.use(mongosanitize())
+app.use(xss())
+
 app.use(express.static(`${__dirname}/public`));
 
 app.use((req, res, next) => {
