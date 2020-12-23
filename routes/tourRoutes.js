@@ -20,6 +20,7 @@ router
   .route('/')
   .get(tourController.getAllTours)
   .post(authController.protect,authController.restrictTo('admin','lead-guide'), tourController.createTour);
+  router.route('/distances/:latlng/unit/:unit').get(tourController.getDistances)
 
 router
   .route('/:id')
@@ -35,3 +36,4 @@ router
 //   authController.restrictTo('user'),
 //   reviewController.createReview)
 module.exports = router;
+//https://www.google.com/maps/place/San+Francisco,+CA,+USA/@37.7317629,-122.447661,16z/data=!4m5!3m4!1s0x80859a6d00690021:0x4a501367f076adff!8m2!3d37.7749295!4d-122.4194155
