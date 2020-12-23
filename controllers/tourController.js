@@ -164,6 +164,7 @@ status:'success',
 exports.getDistances= catchAsync(async(req,res,next)=>{
   
   const {latlng,unit}=req.params;
+  const multiplier= unit==='mi'?0.000621371:0.001;
 
   const [lat,lng]=latlng.split(',');
   if(!lat||!lng)
@@ -180,13 +181,13 @@ const distances = await Tour.aggregate(
           coordinates:[lng*1,lat*1]
         },
         distanceField:'distance',
-        distanceMultiplier:0.001
+        distanceMultiplier:multiplier
       }
 
     },
     ,
       {
-        $project:{
+        $project: {
           distance:1,
           name:1
         }
